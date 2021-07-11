@@ -87,13 +87,17 @@ app.get("/login", function (req, res) {
 app.get("/register", function (req, res) {
     res.render("register")
 })
-app.get("/secrets", function (req, res) {
-    if (req.isAuthenticated()) {
-        res.render("secrets");
+app.get("/secrets", function(req, res){
+  User.find({"secret": {$ne: null}}, function(err, foundUsers){
+    if (err){
+      console.log(err);
     } else {
-        res.redirect("/login")
+      if (foundUsers) {
+        res.render("secrets", {usersWithSecrets: foundUsers});
+      }
     }
-})
+  });
+});
 app.get("/submit", function (req, res) {
     if (req.isAuthenticated()) {
         res.render("submit");
